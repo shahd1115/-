@@ -1,0 +1,2755 @@
+# Write the HTML file in parts to avoid truncation
+part1 = """<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة إدارة الإنتاج والعمليات - أسئلة المحاضرات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a5f7a;
+            --primary-light: #2c8da8;
+            --primary-dark: #0d3d4d;
+            --secondary: #f4a261;
+            --accent: #e76f51;
+            --success: #2a9d8f;
+            --danger: #e63946;
+            --warning: #f4a261;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #2b2d42;
+            --text-light: #6c757d;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: moveGrid 20s linear infinite;
+        }
+        @keyframes moveGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .stat-item i { margin-left: 0.5rem; color: var(--secondary); }
+        .nav-container {
+            background: var(--card-bg);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        .nav-scroll {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none;
+        }
+        .nav-scroll::-webkit-scrollbar { display: none; }
+        .nav-btn {
+            flex-shrink: 0;
+            padding: 0.7rem 1.2rem;
+            border: 2px solid var(--primary-light);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26, 95, 122, 0.3);
+        }
+        .nav-btn .badge {
+            background: var(--secondary);
+            color: var(--primary-dark);
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-right: 0.4rem;
+        }
+        .progress-section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            margin: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .progress-header h3 { color: var(--primary); font-size: 1.2rem; }
+        .progress-percent { font-size: 1.5rem; font-weight: 900; color: var(--success); }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--primary-light));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        .progress-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .progress-stat { text-align: center; padding: 0.5rem 1rem; border-radius: var(--radius-sm); background: #f8f9fa; }
+        .progress-stat .number { font-size: 1.3rem; font-weight: 800; color: var(--primary); }
+        .progress-stat .label { font-size: 0.8rem; color: var(--text-light); }
+        .lecture-section { display: none; padding: 1rem; animation: fadeIn 0.4s ease; }
+        .lecture-section.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .lecture-title {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .lecture-title h2 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+        .lecture-title span { opacity: 0.9; font-size: 0.95rem; }
+        .question-type {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border-right: 5px solid var(--primary);
+        }
+        .question-type-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .question-type-header i { font-size: 1.5rem; color: var(--secondary); }
+        .question-type-header h3 { color: var(--primary); font-size: 1.3rem; }
+        .question-card {
+            background: #f8f9fa;
+            border-radius: var(--radius-sm);
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .question-card:hover {
+            border-color: var(--primary-light);
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .question-number {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        .options { display: flex; flex-direction: column; gap: 0.6rem; }
+        .option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: var(--radius-sm);
+            padding: 0.9rem 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1rem;
+        }
+        .option:hover { border-color: var(--primary-light); background: #f0f7ff; }
+        .option-letter {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .option.correct { border-color: var(--success); background: #e8f5f0; color: var(--success); }
+        .option.correct .option-letter { background: var(--success); }
+        .option.wrong { border-color: var(--danger); background: #ffe8e8; color: var(--danger); opacity: 0.7; }
+        .option.wrong .option-letter { background: var(--danger); }
+        .option.selected { border-color: var(--primary); background: #e8f0ff; }
+        .option.selected .option-letter { background: var(--primary); }
+        .answer-reveal {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #e8f5f0, #d4edda);
+            border-radius: var(--radius-sm);
+            border-right: 4px solid var(--success);
+            animation: slideIn 0.3s ease;
+        }
+        .answer-reveal.show { display: block; }
+        .answer-reveal .correct-answer { color: var(--success); font-weight: 800; font-size: 1.1rem; }
+        .answer-reveal .explanation { color: var(--text); margin-top: 0.5rem; font-size: 0.95rem; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tf-options { display: flex; gap: 1rem; margin-top: 1rem; }
+        .tf-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #e9ecef;
+            background: white;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .tf-btn:hover { border-color: var(--primary-light); background: #f0f7ff; }
+        .tf-btn.correct { border-color: var(--success); background: #e8f5f0; color: var(--success); }
+        .tf-btn.wrong { border-color: var(--danger); background: #ffe8e8; color: var(--danger); opacity: 0.7; }
+        .tf-btn.selected { border-color: var(--primary); background: #e8f0ff; }
+        .essay-card {
+            background: #f8f9fa;
+            border-radius: var(--radius-sm);
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .essay-card:hover { border-color: var(--secondary); box-shadow: var(--shadow-hover); }
+        .essay-question {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        .essay-answer-btn {
+            background: linear-gradient(135deg, var(--secondary), #e9c46a);
+            color: var(--primary-dark);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .essay-answer-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(244, 162, 97, 0.4); }
+        .essay-answer {
+            display: none;
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 1.2rem;
+            border-right: 4px solid var(--secondary);
+            animation: slideIn 0.3s ease;
+        }
+        .essay-answer.show { display: block; }
+        .essay-answer h4 { color: var(--primary); margin-bottom: 0.8rem; font-size: 1.1rem; }
+        .essay-answer p, .essay-answer li { color: var(--text); line-height: 1.8; margin-bottom: 0.5rem; }
+        .essay-answer ul { padding-right: 1.5rem; margin-bottom: 1rem; }
+        .quiz-mode-btn {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: linear-gradient(135deg, var(--accent), #f4a261);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 20px rgba(231, 111, 81, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .quiz-mode-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 30px rgba(231, 111, 81, 0.5); }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: modalIn 0.3s ease;
+            position: relative;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem; left: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: color 0.3s;
+        }
+        .modal-close:hover { color: var(--danger); }
+        .modal-title { color: var(--primary); font-size: 1.5rem; margin-bottom: 1.5rem; text-align: center; }
+        .quiz-question { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text); line-height: 1.6; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; }
+        .quiz-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: var(--radius-sm);
+            padding: 1rem 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: right;
+        }
+        .quiz-option:hover { border-color: var(--primary-light); background: #f0f7ff; }
+        .quiz-option.correct { border-color: var(--success); background: #e8f5f0; }
+        .quiz-option.wrong { border-color: var(--danger); background: #ffe8e8; }
+        .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+        .quiz-nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .quiz-nav-btn:hover { background: var(--primary-dark); }
+        .quiz-nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .quiz-progress { text-align: center; color: var(--text-light); font-weight: 600; }
+        .quiz-result { text-align: center; padding: 2rem; }
+        .quiz-result-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .quiz-result-score { font-size: 3rem; font-weight: 900; color: var(--primary); margin-bottom: 0.5rem; }
+        .quiz-result-text { font-size: 1.2rem; color: var(--text-light); margin-bottom: 1.5rem; }
+        .search-container { padding: 1rem; max-width: 600px; margin: 0 auto; }
+        .search-box { position: relative; }
+        .search-box input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .search-box input:focus { border-color: var(--primary-light); box-shadow: 0 0 0 4px rgba(26, 95, 122, 0.1); }
+        .search-box i { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1.1rem; }
+        .search-results {
+            display: none;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            box-shadow: var(--shadow);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .search-results.show { display: block; }
+        .search-result-item { padding: 0.8rem; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; border-radius: var(--radius-sm); }
+        .search-result-item:hover { background: #f8f9fa; }
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-lecture { font-size: 0.8rem; color: var(--primary); font-weight: 700; margin-bottom: 0.2rem; }
+        .search-result-text { font-size: 0.9rem; color: var(--text); }
+        .footer { background: var(--primary-dark); color: white; text-align: center; padding: 2rem; margin-top: 2rem; }
+        .footer p { opacity: 0.8; font-size: 0.95rem; }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5rem; }
+            .header-stats { gap: 1rem; }
+            .stat-item { padding: 0.6rem 1rem; font-size: 0.85rem; }
+            .lecture-title h2 { font-size: 1.3rem; }
+            .question-text, .essay-question { font-size: 0.95rem; }
+            .quiz-mode-btn { bottom: 1rem; left: 1rem; padding: 0.8rem 1.2rem; font-size: 0.95rem; }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px; height: 10px;
+            background: var(--secondary);
+            animation: confetti-fall 3s ease-out forwards;
+            z-index: 3000;
+            pointer-events: none;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+      .scroll-top {
+            position: fixed;
+            bottom: 2rem; right: 2rem;
+            background: var(--primary);
+            color: white;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .scroll-top.show { display: flex; }
+        .scroll-top:hover { background: var(--primary-dark); transform: translateY(-3px); }
+    </style>
+</head>
+<body>
+  <header class="header">
+        <h1><i class="fas fa-graduation-cap"></i> منصة إدارة الإنتاج والعمليات</h1>
+        <p>أسئلة تفاعلية شاملة لجميع المحاضرات</p>
+        <div class="header-stats">
+            <div class="stat-item"><i class="fas fa-book"></i><span>7 محاضرات</span></div>
+            <div class="stat-item"><i class="fas fa-question-circle"></i><span id="total-questions">0 سؤال</span></div>
+            <div class="stat-item"><i class="fas fa-check-circle"></i><span id="answered-count">0 مجاب</span></div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="ابحث في الأسئلة..." autocomplete="off">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="search-results" id="search-results"></div>
+    </div>
+
+    <div class="progress-section">
+        <div class="progress-header">
+            <h3><i class="fas fa-chart-line"></i> تقدمك في الدراسة</h3>
+            <span class="progress-percent" id="progress-percent">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-stats">
+            <div class="progress-stat"><div class="number" id="stat-correct">0</div><div class="label">صحيح</div></div>
+            <div class="progress-stat"><div class="number" id="stat-wrong">0</div><div class="label">خاطئ</div></div>
+            <div class="progress-stat"><div class="number" id="stat-remaining">0</div><div class="label">متبقي</div></div>
+        </div>
+    </div>
+
+    <nav class="nav-container">
+        <div class="nav-scroll" id="nav-scroll">
+            <button class="nav-btn active" data-lecture="lecture3"><span class="badge">3</span> المحاضرة الثالثة</button>
+            <button class="nav-btn" data-lecture="lecture4"><span class="badge">4</span> المحاضرة الرابعة</button>
+            <button class="nav-btn" data-lecture="lecture5"><span class="badge">5</span> المحاضرة الخامسة</button>
+            <button class="nav-btn" data-lecture="lecture6"><span class="badge">6</span> المحاضرة السادسة</button>
+            <button class="nav-btn" data-lecture="lecture7"><span class="badge">7</span> المحاضرة السابعة</button>
+            <button class="nav-btn" data-lecture="lecture8"><span class="badge">8</span> المحاضرة الثامنة</button>
+            <button class="nav-btn" data-lecture="lecture9"><span class="badge">9</span> المحاضرة التاسعة</button>
+        </div>
+    </nav>
+    part3 = """
+    <!-- Lecture 3 -->
+    <section class="lecture-section active" id="lecture3">
+        <div class="lecture-title">
+            <h2>المحاضرة الثالثة</h2>
+            <span>التنبؤ بالطلب ودورة حياة المنتج</span>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-list-ol"></i>
+                <h3>أولاً: اختر الإجابة الصحيحة</h3>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-1">
+                <div class="question-number">1</div>
+                <div class="question-text">إن ........ هو فن وعلم التوقع بالأحداث المستقبلية.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> التخطيط</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> التنظيم</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> التنبؤ</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> التوجيه</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. التنبؤ</div>
+                    <div class="explanation">التنبؤ هو فن وعلم التوقع بالأحداث المستقبلية بناءً على البيانات التاريخية والتحليل الإحصائي.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يستخدم التنبؤ ........ في كثير من أنشطة الإنتاج مثل التخطيط للمشتريات.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> قصير الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> متوسط الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> طويل الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الكمي</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. قصير الأجل</div>
+                    <div class="explanation">التنبؤ قصير الأجل يستخدم في التخطيط للمشتريات والمواد الأولية والعمليات اليومية.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-3">
+                <div class="question-number">3</div>
+                <div class="question-text">يستخدم التنبؤ ........ في تخطيط الإنتاج، والموازنات التقديرية.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> قصير الأجل</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> متوسط الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> طويل الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الكمي</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. متوسط الأجل</div>
+                    <div class="explanation">التنبؤ متوسط الأجل يمتد من 3 أشهر إلى 3 سنوات ويستخدم في تخطيط الإنتاج والموازنات التقديرية.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-4">
+                <div class="question-number">4</div>
+                <div class="question-text">يستخدم التنبؤ ...... عند التخطيط لسلع أو خدمات جديدة، واختيار موقع المشروع.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> قصير الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> متوسط الأجل</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> طويل الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الكمي</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. طويل الأجل</div>
+                    <div class="explanation">التنبؤ طويل الأجل يمتد لأكثر من 3 سنوات ويستخدم في القرارات الاستراتيجية مثل اختيار موقع المشروع.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-5">
+                <div class="question-number">5</div>
+                <div class="question-text">تعد طريقة ........ إحدى الطرق الوصفية للتنبؤ بالطلب.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الاتجاه العام</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> المتوسط المتحرك</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> التمهيد الأسي</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">د</span> بحوث التسويق</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: د. بحوث التسويق</div>
+                    <div class="explanation">الطرق الوصفية تعتمد على آراء الخبراء والمديرين مثل بحوث التسويق وطريقة دلفاي وتقديرات مندوبي البيع.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-6">
+                <div class="question-number">6</div>
+                <div class="question-text">تعد طريقة ........ إحدى الطرق الكمية للتنبؤ بالطلب.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> بحوث التسويق</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> التمهيد الأسي</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> دلفاي</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> تقديرات مندوبي البيع</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. التمهيد الأسي</div>
+                    <div class="explanation">الطرق الكمية تعتمد على البيانات التاريخية والتحليل الإحصائي والرياضي مثل المتوسط المتحرك والتمهيد الأسي.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-7">
+                <div class="question-number">7</div>
+                <div class="question-text">تتميز طريقة ...... كأحد الطرق الوصفية للتنبؤ بالطلب بأنها واقعية لأنها نابعة من واقع وظروف السوق.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> بحوث التسويق</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> التمهيد الأسي</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> دلفاي</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">د</span> تقديرات مندوبي البيع</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: د. تقديرات مندوبي البيع</div>
+                    <div class="explanation">تقديرات مندوبي البيع واقعية لأنهم على تماس مباشر مع السوق والعملاء ويعرفون احتياجاتهم.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-8">
+                <div class="question-number">8</div>
+                <div class="question-text">تصل المبيعات إلى ذروتها في مرحلة ...... من مراحل دورة حياة المنتج.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> التقديم</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> النمو</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> النضج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> التدهور</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. النضج</div>
+                    <div class="explanation">في مرحلة النضج تصل المبيعات إلى أقصى مستوى لها ثم تبدأ بالاستقرار والانخفاض التدريجي.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-mcq-9">
+                <div class="question-number">9</div>
+                <div class="question-text">تنمو المبيعات سريعًا في مرحلة ...... من مراحل دورة حياة المنتج.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> التقديم</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> النمو</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> النضج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> التدهور</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. النمو</div>
+                    <div class="explanation">في مرحلة النمو تزداد المبيعات بشكل سريع مع انتشار المنتج وزيادة الوعي به بين المستهلكين.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-check-double"></i>
+                <h3>ثانياً: صحيح أم خطأ</h3>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-1">
+                <div class="question-number">1</div>
+                <div class="question-text">إن التنبؤ هو فن وعلم التوقع بالأحداث المستقبلية.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يساعد التنبؤ بالطلب طويل الأجل في تحديد الطاقة الإنتاجية للمنظمة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-3">
+                <div class="question-number">3</div>
+                <div class="question-text">لا تزيد مدة التنبؤ متوسط الأجل عن سنة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">التنبؤ متوسط الأجل يمتد من 3 أشهر إلى 3 سنوات، وليس سنة فقط.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-4">
+                <div class="question-number">4</div>
+                <div class="question-text">تتراوح مدة التنبؤ قصير الأجل من سنة إلى ثلاث سنوات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">التنبؤ قصير الأجل يكون أقل من 3 أشهر، وليس من سنة إلى ثلاث سنوات.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-5">
+                <div class="question-number">5</div>
+                <div class="question-text">يستخدم التنبؤ طويل الأجل في تخطيط أنشطة البحوث والتطوير.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-6">
+                <div class="question-number">6</div>
+                <div class="question-text">تعد طريقة التنبؤ بالطلب الموسمي أحد الطرق الوصفية للتنبؤ بالطلب.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">التنبؤ بالطلب الموسمي هو أحد الطرق الكمية التي تعتمد على البيانات التاريخية وليست وصفية.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-7">
+                <div class="question-number">7</div>
+                <div class="question-text">تعد طريقة الاتجاه العام أحد الطرق الكمية للتنبؤ بالطلب.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-8">
+                <div class="question-number">8</div>
+                <div class="question-text">تعد طريقة آراء وتقديرات المديرين أحد الطرق الوصفية للتنبؤ بالطلب.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l3-tf-9">
+                <div class="question-number">9</div>
+                <div class="question-text">هناك علاقة عكسية بين دقة التنبؤ والفترة التي يتم التنبؤ على أساسها.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                    <div class="explanation">كلما زادت مدة التنبؤ قلت دقته، والعكس صحيح. التنبؤ قصير الأجل أكثر دقة من الطويل.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    part4 = """
+    <!-- Lecture 4 -->
+    <section class="lecture-section" id="lecture4">
+        <div class="lecture-title">
+            <h2>المحاضرة الرابعة</h2>
+            <span>اختيار موقع المنشأة والتخطيط المكاني</span>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-list-ol"></i>
+                <h3>أولاً: اختر الإجابة الصحيحة</h3>
+            </div>
+            
+            <div class="question-card" data-id="l4-mcq-1">
+                <div class="question-number">1</div>
+                <div class="question-text">تشمل تكاليف ...... ثمن شراء الأرض، وتكلفة الإنشاءات والمباني، وأجور العمال.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> توزيع المنتجات</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> المواد الأولية</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> الموقع</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الثابتة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. الموقع</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-mcq-2">
+                <div class="question-number">2</div>
+                <div class="question-text">وفقًا لاستراتيجية ..... فإن الشركة التي تمتلك عدة مصانع تقوم بتخصيص كل مصنع لإنتاج منتج واحد.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> الإنتاج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> مصنع لكل منطقة سوقية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> مصنع لكل نوع من العمليات</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> المصنع ذو الغرض العام</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. الإنتاج</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-mcq-3">
+                <div class="question-number">3</div>
+                <div class="question-text">وفقًا لاستراتيجية .... تصمم المصانع بحيث تخدم منطقة جغرافية معينة، وكل مصنع ينتج معظم منتجات الشركة.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الإنتاج</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> مصنع لكل منطقة سوقية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> مصنع لكل نوع من العمليات</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> المصنع ذو الغرض العام</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. مصنع لكل منطقة سوقية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-mcq-4">
+                <div class="question-number">4</div>
+                <div class="question-text">وفقًا لاستراتيجية ...... يركز كل مصنع من مصانع الشركة على جزء أو عملية إنتاجية معينة من الأجزاء المكونة لعملية إنتاج المنتج.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الإنتاج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> مصنع لكل منطقة سوقية</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> مصنع لكل نوع من العمليات</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> المصنع ذو الغرض العام</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. مصنع لكل نوع من العمليات</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-mcq-5">
+                <div class="question-number">5</div>
+                <div class="question-text">وفقًا لاستراتيجية .... فإن المصانع تكون مرنة وقادرة على التعامل مع مجموعة واسعة من المنتجات.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الإنتاج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> مصنع لكل منطقة سوقية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> مصنع لكل نوع من العمليات</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">د</span> المصنع ذو الغرض العام</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: د. المصنع ذو الغرض العام</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-mcq-6">
+                <div class="question-number">6</div>
+                <div class="question-text">عند التخطيط لموقع جديد يفضل اختيار بديل .... إذا كان الموقع يتميز بصفات لا تتوافر في غيره.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> التوسع في الموقع الحالي</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> إضافة مواقع جديدة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> إغلاق الموقع الحالي وفتح موقع جديد</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> ألا تفعل المنظمة شيئًا</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. التوسع في الموقع الحالي</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-mcq-7">
+                <div class="question-number">7</div>
+                <div class="question-text">عند التخطيط لموقع جديد يفضل اختيار بديل .... لخدمة الطلب المتزايد على منتجات المنظمة.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> التوسع في الموقع الحالي</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> إضافة مواقع جديدة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> إغلاق الموقع الحالي وفتح موقع جديد</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> ألا تفعل المنظمة شيئًا</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. إضافة مواقع جديدة</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-mcq-8">
+                <div class="question-number">8</div>
+                <div class="question-text">عند التخطيط لموقع جديد يفضل اختيار بديل .... عند تغير ظروف الأسواق، ونفاد المواد الخام وارتفاع تكلفة العمليات.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> التوسع في الموقع الحالي</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> إضافة مواقع جديدة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> إغلاق الموقع الحالي وفتح موقع جديد</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> ألا تفعل المنظمة شيئًا</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. إغلاق الموقع الحالي وفتح موقع جديد</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-check-double"></i>
+                <h3>ثانياً: صحيح أم خطأ</h3>
+            </div>
+            
+            <div class="question-card" data-id="l4-tf-1">
+                <div class="question-number">1</div>
+                <div class="question-text">تعد قرارات اختيار موقع المنظمة أحد القرارات الإستراتيجية الهامة التي تتخذها إدارة المنظمة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-tf-2">
+                <div class="question-number">2</div>
+                <div class="question-text">تواجه المنظمات بعملية اتخاذ القرار الخاص باختيار موقع معين فقط في بداية حياتها.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">قد تحتاج المنظمة لإعادة اختيار الموقع عند التوسع أو تغير ظروف السوق.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-tf-3">
+                <div class="question-number">3</div>
+                <div class="question-text">قد تحتاج المنظمة إلى اتخاذ قرار لاختيار موقع جديد لأسباب عديدة، منها: الرغبة في التوسع.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-tf-4">
+                <div class="question-number">4</div>
+                <div class="question-text">ارتفاع تكلفة العمل ببعض المناطق قد يدفع المنظمات إلى إعادة النظر في تلك المواقع والبحث عن مواقع أخرى أفضل.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-tf-5">
+                <div class="question-number">5</div>
+                <div class="question-text">يعتمد الهدف الاستراتيجي على نوع الصناعة (سلع أو خدمات).</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-tf-6">
+                <div class="question-number">6</div>
+                <div class="question-text">يتمثل الهدف الاستراتيجي للشركات المنتجة للخدمة في تخفيض التكاليف بهدف تعظيم الإيرادات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">الهدف الاستراتيجي للشركات المنتجة للخدمة هو زيادة سرعة التسليم وتعظيم الإيرادات.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-tf-7">
+                <div class="question-number">7</div>
+                <div class="question-text">يتمثل الهدف الاستراتيجي للشركات المنتجة للسلع زيادة سرعة التسليم في الموعد المحدد، وتعظيم الإيرادات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">الهدف الاستراتيجي للشركات المنتجة للسلع هو تخفيض التكاليف وتعظيم الإيرادات.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l4-tf-8">
+                <div class="question-number">8</div>
+                <div class="question-text">يتمثل الهدف الاستراتيجي لأي منظمة عند اتخاذ قرار الموقع في تعظيم منافع الموقع على المدى البعيد.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    part5 = """
+    <!-- Lecture 5 -->
+    <section class="lecture-section" id="lecture5">
+        <div class="lecture-title">
+            <h2>المحاضرة الخامسة</h2>
+            <span>تصميم المنتج والعمليات والطاقة الإنتاجية</span>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-list-ol"></i>
+                <h3>أولاً: اختر الإجابة الصحيحة</h3>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-1">
+                <div class="question-number">1</div>
+                <div class="question-text">يمثل نشاط ....... ما بين %50 إلى %75 من إجمالي تكلفة الإنتاج في المنظمات.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> معالجة المواد</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> تصميم المنتج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> إدارة الصيانة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> مراقبة الجودة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. معالجة المواد</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يشير نشاط ....... إلى الترتيب المادي للمرافق.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> إدارة الصيانة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> تخطيط موقع الإنتاج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> مراقبة الجودة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> تصميم العملية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. تخطيط موقع الإنتاج</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-3">
+                <div class="question-number">3</div>
+                <div class="question-text">يتعامل نشاط .......... مع تحويل الأفكار إلى واقع ملموس.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> تصميم العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> تخطيط ومراقبة الإنتاج</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> تصميم المنتج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> تخطيط موقع الإنتاج</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. تصميم المنتج</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-4">
+                <div class="question-number">4</div>
+                <div class="question-text">في مرحلة ....... من مراحل تصميم منتج جديد، يتم الحكم على الأداء التسويقي والفني للمنتج.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> بناء النموذج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> توليد الفكرة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> التصميم النهائي</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">د</span> اختبار النموذج</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: د. اختبار النموذج</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-5">
+                <div class="question-number">5</div>
+                <div class="question-text">تشير الطاقة ........ إلى أقصى كمية إنتاج يمكن تحقيقها في العمل وذلك دون وجود أية مسموحات خاصة بالأعطال.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> القصوى</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الفائضة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">د</span> النظرية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: د. النظرية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-6">
+                <div class="question-number">6</div>
+                <div class="question-text">تمثل الطاقة ..... طاقة الإنتاج المحددة خلال فترة زمنية معينة وذلك وفقًا لمواصفات عوامل الإنتاج.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> القصوى</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الفائضة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> النظرية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. العملية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-7">
+                <div class="question-number">7</div>
+                <div class="question-text">تمثل الطاقة ......... حجم الزيادة عما هو مخطط إنتاجه أو تسويقه من المنتجات.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> القصوى</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> العملية</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> الفائضة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> العاطلة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. الفائضة</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-8">
+                <div class="question-number">8</div>
+                <div class="question-text">تعبر الطاقة ..... عن الفقد الناتج عن توقف الآلات أو العنصر البشري.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> القصوى</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الفائضة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">د</span> العاطلة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: د. العاطلة</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-mcq-9">
+                <div class="question-number">9</div>
+                <div class="question-text">في تحليل دورة حياة المنتج، تتسم مرحلة ........ باستقرار المبيعات والتصميم.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> النمو</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> النضج</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> التدهور</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> التقديم</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. النضج</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-check-double"></i>
+                <h3>ثانياً: صحيح أم خطأ</h3>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-1">
+                <div class="question-number">1</div>
+                <div class="question-text">يعتبر قرار تحديد موقع مرافق العمليات قرارًا قصير الأجل ولا يتطلب استثمارات كبيرة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">قرار تحديد موقع المرافق هو قرار استراتيجي طويل الأجل ويتطلب استثمارات ضخمة.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يشير نشاط معالجة المواد إلى نقل المواد إلى الآلة، ومن آلة إلى أخرى أثناء عملية الإنتاج.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-3">
+                <div class="question-number">3</div>
+                <div class="question-text">يتعامل تصميم المنتج مع تحويل الأفكار إلى واقع ملموس.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-4">
+                <div class="question-number">4</div>
+                <div class="question-text">يشير تصميم العملية إلى اتخاذ قرارات تفصيلية لمسار العملية الشامل لتحويل المواد الخام إلى منتجات تامة الصنع.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-5">
+                <div class="question-number">5</div>
+                <div class="question-text">يشمل تخطيط ومراقبة الإنتاج، فحص المواد الخام والعمليات الإنتاجية والمنتجات النهائية.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">مراقبة الجودة هي التي تشمل الفحص وليس تخطيط ومراقبة الإنتاج.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-6">
+                <div class="question-number">6</div>
+                <div class="question-text">في مرحلتي تقديم المنتج والنمو يتم دعم الجهود البحثية من خلال خفض تكاليف الإنتاج وإعادة التصميم.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">في مرحلة النضج والتدهور يتم خفض التكاليف وإعادة التصميم وليس في التقديم والنمو.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-7">
+                <div class="question-number">7</div>
+                <div class="question-text">يعد التصميم المقاوم مدخل ابتكاري منظم يسعى إلى تعظيم القيمة الاقتصادية للمنتج في مقابل تكلفته.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">التصميم المقاوم يسعى لتقليل الفشل وليس تعظيم القيمة الاقتصادية.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-8">
+                <div class="question-number">8</div>
+                <div class="question-text">يعد التصميم بمعاونة الحاسب هو التصميم صاحب احتمال الفشل المنخفض عندما يحدث تغير في البيئة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">التصميم المقاوم هو صاحب احتمال الفشل المنخفض عند التغير في البيئة.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l5-tf-9">
+                <div class="question-number">9</div>
+                <div class="question-text">تمثل الطاقة الفائضة، حجم الزيادة عما هو مخطط إنتاجه أو تسويقه من المنتجات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-pen-fancy"></i>
+                <h3>ثالثاً: الأسئلة المقالية</h3>
+            </div>
+            
+            <div class="essay-card" data-id="l5-essay-1">
+                <div class="question-number">1</div>
+                <div class="essay-question">توجد العديد من استراتيجيات التخطيط الشامل للإنتاج والعمليات والتي يمكن استخدامها للوفاء بالطلب المتوقع على منتجات المنظمة، اعرض اثنان منهم.</div>
+                <button class="essay-answer-btn" onclick="toggleEssay(this)"><i class="fas fa-lightbulb"></i> عرض الإجابة</button>
+                <div class="essay-answer">
+                    <h4>استراتيجيات التخطيط الشامل للإنتاج والعمليات:</h4>
+                    <ul>
+                        <li><strong>استراتيجية استخدام قوة العمل الحالية مع التغير في أوقات التشغيل:</strong> يتم بمقتضاها عدم إحداث أية تغييرات في حجم قوة العمل الحالية والمستخدمة بالمنظمة ويمكن إحداث التغيير في أزمنة عمليات الإنتاج والتشغيل.</li>
+                        <li><strong>استراتيجية التركيز على تغيير حجم قوة العمل بالمنظمة:</strong> تقوم المنظمة بتعيين بعض العاملين الجدد وذلك لمواجهة الزيادة في الطلب على منتجاتها خلال مواسم معينة وتقوم أيضًا بالاستغناء عن بعض العاملين الحاليين في فترات انخفاض هذا الطلب.</li>
+                        <li><strong>استراتيجية التركيز على استخدام المخزون السلعي للوفاء بالطلب المتوقع.</strong></li>
+                        <li><strong>استراتيجية تأخير موعد التسليم.</strong></li>
+                        <li><strong>استراتيجية التعاقد من الباطن للوفاء بالطلب المتوقع.</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    part6 = """
+    <!-- Lecture 6 -->
+    <section class="lecture-section" id="lecture6">
+        <div class="lecture-title">
+            <h2>المحاضرة السادسة</h2>
+            <span>التنظيم الداخلي وخط الإنتاج</span>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-list-ol"></i>
+                <h3>أولاً: اختر الإجابة الصحيحة</h3>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-1">
+                <div class="question-number">1</div>
+                <div class="question-text">عليه تحديد نوع التنظيم الداخلي في المنشآت الصناعية هو الأساس الجوهري الذي يتم بناء .....</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> عدد الموردين</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> نوع العمليات الإنتاجية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الموقع الجغرافي</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> حجم رأس المال المستثمر</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. نوع العمليات الإنتاجية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يطلق مسمى "خط الإنتاج" على نوع التنظيم الداخلي الذي يعتمد على .........</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الموقع الثابت</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> الخلايا التصنيعية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> العملية</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">د</span> المنتج (الإنتاج المستمر)</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: د. المنتج (الإنتاج المستمر)</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-3">
+                <div class="question-number">3</div>
+                <div class="question-text">من أهم عيوب التنظيم الداخلي على أساس ...... صعوبة ربط خطط الحوافز بالنتائج الفردية.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الموقع الثابت</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> المنتج (الإنتاج المستمر)</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الخلية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. المنتج (الإنتاج المستمر)</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-4">
+                <div class="question-number">4</div>
+                <div class="question-text">يتم تجميع الآلات والمعدات المتشابهة في قسم واحد عند اتباع التنظيم على أساس .......</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الموقع الثابت</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> المنتج (الإنتاج المستمر)</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الخلية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. العملية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-5">
+                <div class="question-number">5</div>
+                <div class="question-text">من أهم عيوب التنظيم الداخلي على أساس ...... ارتفاع تكلفة الإشراف على العمال.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> المنتج (الإنتاج المستمر)</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الموقع الثابت</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الخلية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. العملية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-6">
+                <div class="question-number">6</div>
+                <div class="question-text">تعتبر صناعة السفن والطائرات والجسور مثالًا واضحًا للتنظيم على أساس .........</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> العملية</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> الموقع الثابت</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> المنتج (الإنتاج المستمر)</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الخلية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. الموقع الثابت</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-7">
+                <div class="question-number">7</div>
+                <div class="question-text">يمتاز التنظيم على أساس ..... بدرجة من المرونة تسمح بإمكانية إجراء تغييرات في تصميم السلعة.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> الخلية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> المنتج (الإنتاج المستمر)</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الموقع الثابت</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. العملية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-8">
+                <div class="question-number">8</div>
+                <div class="question-text">أهم عيوب التنظيم على أساس ......... ارتفاع تكاليف الإنتاج، ومناولة المواد.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> العملية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> المنتج (الإنتاج المستمر)</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الموقع الثابت</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الخلية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. العملية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-mcq-9">
+                <div class="question-number">9</div>
+                <div class="question-text">يوجد ........... أساليب لزيادة درجة التوازن في الخط الإنتاجي.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> ثلاثة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> أربعة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> خمسة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> ستة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. ثلاثة</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-check-double"></i>
+                <h3>ثانياً: صحيح أم خطأ</h3>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-1">
+                <div class="question-number">1</div>
+                <div class="question-text">يمثل نوع العمليات الإنتاجية وخصائصها الأساس الجوهري لتحديد نوع التنظيم الداخلي في المنظمات الصناعية.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يستخدم التنظيم الداخلي على أساس المنتج في حالات الإنتاج المتقطع الذي يتطلب تغييرات مستمرة في تتابع الآلات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">التنظيم على أساس المنتج يستخدم في الإنتاج المستمر وليس المتقطع.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-3">
+                <div class="question-number">3</div>
+                <div class="question-text">من مزايا التنظيم على أساس المنتج انخفاض تكلفة الوحدة المنتجة بسبب غزارة الإنتاج.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-4">
+                <div class="question-number">4</div>
+                <div class="question-text">يتطلب التنظيم على أساس العملية مهارات إشرافية عالية نظرًا لتعقد مسارات تدفق المواد بين الأقسام المختلفة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-5">
+                <div class="question-number">5</div>
+                <div class="question-text">يهدف التنظيم على أساس الخلايا إلى الاستفادة من مزايا انسياب خط المنتج مع الحفاظ على مرونة التنظيم الوظيفي.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-6">
+                <div class="question-number">6</div>
+                <div class="question-text">يقصد بتوازن خط الإنتاج محاولة جعل وقت التشغيل في جميع المحطات متساويًا قدر الإمكان.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-7">
+                <div class="question-number">7</div>
+                <div class="question-text">يعتبر تغيير الآلات بآلات أخرى أسرع أحد الأساليب المتبعة لزيادة توازن الخط الإنتاجي.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-8">
+                <div class="question-number">8</div>
+                <div class="question-text">تؤدي مشكلة عنق الزجاجة إلى ظهور وقت ضائع في المحطات التي تلي المحطة البطيئة في خط الإنتاج.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l6-tf-9">
+                <div class="question-number">9</div>
+                <div class="question-text">يعد الاستغلال غير الفعال للعمالة والآلات أحد مشاكل عدم توازن خط الإنتاج.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-pen-fancy"></i>
+                <h3>ثالثاً: الأسئلة المقالية</h3>
+            </div>
+            
+            <div class="essay-card" data-id="l6-essay-1">
+                <div class="question-number">1</div>
+                <div class="essay-question">هناك ثلاث أنواع أساسية للتنظيم الداخلي وفقًا لنوع العمليات، وضح أحد هذه الأنواع مع ذكر بعض المزايا والعيوب الخاصة به.</div>
+                <button class="essay-answer-btn" onclick="toggleEssay(this)"><i class="fas fa-lightbulb"></i> عرض الإجابة</button>
+                <div class="essay-answer">
+                    <h4>التنظيم الداخلي على أساس المنتج:</h4>
+                    <p>وهو التصميم الذي يتم من خلاله ترتيب المعدات والأفراد وجميع تجهيزات الإنتاج وفقًا لترتيب وتتابع المراحل والعمليات الإنتاجية اللازمة لإنتاج منتجات نمطية محددة، والتي تتطلب نفس عمليات التشغيل وفقًا لتتابع ثابت من العمليات. ويسمى هذا النوع بخط الإنتاج، ويستخدم في حالة الإنتاج المستمر.</p>
+                    <h4>أهم مزايا التنظيم الداخلي على أساس المنتج هي:</h4>
+                    <ul>
+                        <li>إنتاج معدل عالٍ من المخرجات.</li>
+                        <li>تقليل تكلفة الوحدة المنتجة بسبب الإنتاج الكبير.</li>
+                        <li>تقليل التكلفة الكلية للإنتاج.</li>
+                    </ul>
+                    <h4>أهم عيوب التنظيم الداخلي على أساس المنتج هي:</h4>
+                    <ul>
+                        <li>روتينية العمل اليومي تؤدي إلى شعور العاملين بالملل، ويقلل من فرصتهم في إظهار كفاءتهم.</li>
+                        <li>عدم المرونة في استغلال طاقة النظام الإنتاجي لإنتاج سلع أخرى.</li>
+                        <li>ضعف مرونة النظام في الاستجابة للتغييرات في المنتج أو العملية أو حجم المخرجات.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    part7 = """
+    <!-- Lecture 7 -->
+    <section class="lecture-section" id="lecture7">
+        <div class="lecture-title">
+            <h2>المحاضرة السابعة</h2>
+            <span>أنواع عمليات الإنتاج والآلية</span>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-list-ol"></i>
+                <h3>أولاً: اختر الإجابة الصحيحة</h3>
+            </div>
+            
+            <div class="question-card" data-id="l7-mcq-1">
+                <div class="question-number">1</div>
+                <div class="question-text">تقوم عمليات ... على إنتاج عدد من المنتجات غير النمطية، وتتم على نطاق ضيق، ويتميز بالمرونة.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> الإنتاج المتقطع</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> الإنتاج المستمر</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الإنتاج الكبير</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الإنتاج النمطي</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. الإنتاج المتقطع</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-mcq-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يكون الإنتاج على أساس ...... بكميات صغيرة مع قدر مرتفع من التنوع في المنتجات.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الدفعة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> ورشة العمل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> المشروع</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الإنتاج المتدفق</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. ورشة العمل</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-mcq-3">
+                <div class="question-number">3</div>
+                <div class="question-text">يتميز ........ بوجود درجة تنوع متوسطة في المنتجات أو الخدمات.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> الدفعة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> ورشة العمل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> المشروع</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الإنتاج المتدفق</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. الدفعة</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-mcq-4">
+                <div class="question-number">4</div>
+                <div class="question-text">يمثل ....... مجموعة من الأنشطة المترابطة والتي يتم تنفيذها خلال فترة زمنية محددة.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الدفعة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> ورشة العمل</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> المشروع</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الإنتاج المتدفق</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. المشروع</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-mcq-5">
+                <div class="question-number">5</div>
+                <div class="question-text">تقوم عمليات ... على إنتاج حجم كبير من المنتجات النمطية وفقًا لتوقعات الطلب التي تم التنبؤ بها.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الإنتاج المتقطع</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> الإنتاج المستمر</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الإنتاج الكبير</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الإنتاج النمطي</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. الإنتاج المستمر</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-mcq-6">
+                <div class="question-number">6</div>
+                <div class="question-text">يعد انخفاض التنوع أحد عيوب نظام .........</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> الآلية الثابتة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> الآلية المبرمجة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الآلية المرنة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> التصنيع اليدوي</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. الآلية الثابتة</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-mcq-7">
+                <div class="question-number">7</div>
+                <div class="question-text">تعد خلية التصنيع مثالًا على نظام ..........</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الآلية الثابتة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> الآلية المبرمجة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> الآلية المرنة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> التصنيع اليدوي</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. الآلية المرنة</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-check-double"></i>
+                <h3>ثانياً: صحيح أم خطأ</h3>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-1">
+                <div class="question-number">1</div>
+                <div class="question-text">يتم الاعتماد على عمليات الإنتاج المتقطع في الصناعات التي تنتج أجزاء تغذي الصناعات التجميعية.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يكون الإنتاج على أساس الدفعة، بكميات صغيرة مع قدر مرتفع من التنوع في المنتجات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">الإنتاج على أساس الدفعة يكون بكميات متوسطة مع تنوع متوسط، أما ورشة العمل فهي بكميات صغيرة مع تنوع مرتفع.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-3">
+                <div class="question-number">3</div>
+                <div class="question-text">يمثل المشروع مجموعة من الأنشطة المترابطة والتي يتم تنفيذها خلال فترة زمنية محددة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-4">
+                <div class="question-number">4</div>
+                <div class="question-text">يتم الإنتاج خلال عمليات الإنتاج المتقطع على نطاق واسع للتخزين ثم البيع.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">الإنتاج على نطاق واسع للتخزين ثم البيع هو خاص بعمليات الإنتاج المستمر وليس المتقطع.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-5">
+                <div class="question-number">5</div>
+                <div class="question-text">تعد مصانع تكرير البترول أحد أمثلة عمليات الإنتاج المتدفق.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-6">
+                <div class="question-number">6</div>
+                <div class="question-text">يجب على المنظمات أن تعتمد في تشغيل عملياتها على واحدة من العمليات الإنتاجية.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">يمكن للمنظمة استخدام أكثر من نوع عملية إنتاجية في آن واحد حسب احتياجاتها.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-7">
+                <div class="question-number">7</div>
+                <div class="question-text">يعتمد الاختيار بين أنواع العمليات الإنتاجية على عوامل عديدة منها: التحليل الاقتصادي.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-8">
+                <div class="question-number">8</div>
+                <div class="question-text">تحقق الآلية عددًا كبيرًا من المزايا منها، تخفيض التكاليف المتغيرة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-9">
+                <div class="question-number">9</div>
+                <div class="question-text">تعتبر الآلات الرقمية، والإنسان الآلي تطبيقات للآلية الثابتة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">الآلات الرقمية والإنسان الآلي تطبيقات للآلية المرنة وليست الثابتة.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l7-tf-10">
+                <div class="question-number">10</div>
+                <div class="question-text">يتضمن التنظيم الداخلي للموقع عدة جوانب منها: تحقيق التوازن في تدفق المواد.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-pen-fancy"></i>
+                <h3>ثالثاً: الأسئلة المقالية</h3>
+            </div>
+            
+            <div class="essay-card" data-id="l7-essay-1">
+                <div class="question-number">1</div>
+                <div class="essay-question">يوجد نوعان أساسيان من عمليات الإنتاج ويتم الاختيار من بينهما وفقًا لاحتياجات كل منظمة، اذكرهم مع عرض مفصل لأحدهما.</div>
+                <button class="essay-answer-btn" onclick="toggleEssay(this)"><i class="fas fa-lightbulb"></i> عرض الإجابة</button>
+                <div class="essay-answer">
+                    <h4>عمليات الإنتاج المتقطع.</h4>
+                    <h4>عمليات الإنتاج المستمر.</h4>
+                    <h4>عمليات الإنتاج المستمر:</h4>
+                    <p>ويقوم هذا النوع من العمليات على إنتاج حجم كبير من المنتجات النمطية وفقًا لتوقعات الطلب التي تم التنبؤ بها، ويتم الإنتاج على نطاق واسع للتخزين ثم البيع، وهذا النظام يكاد لا يكون فيه أي تنوع في المخرجات، وقد يتخصص في إنتاج منتج واحد فقط.</p>
+                    <p>ويوجد نوعين رئيسيين من عمليات الإنتاج المستمر وهما:</p>
+                    <ul>
+                        <li><strong>الإنتاج الكبير:</strong> وهو يعني الإنتاج بكميات كبيرة مع وجود تشكيلة قليلة جدًا من المنتج.</li>
+                        <li><strong>عمليات الإنتاج المتدفق:</strong> ويعمل هذا النوع من العمليات على إنتاج منتج نمطي بكميات كبيرة على نطاق واسع، مع الاستعانة بعمالة منخفضة المهارة.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    part8 = """
+    <!-- Lecture 8 -->
+    <section class="lecture-section" id="lecture8">
+        <div class="lecture-title">
+            <h2>المحاضرة الثامنة</h2>
+            <span>التخطيط الإجمالي للإنتاج والجدولة</span>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-list-ol"></i>
+                <h3>أولاً: اختر الإجابة الصحيحة</h3>
+            </div>
+            
+            <div class="question-card" data-id="l8-mcq-1">
+                <div class="question-number">1</div>
+                <div class="question-text">يطلق مصطلح "التخطيط الإجمالي للإنتاج" على الخطط التي يكون مداها الزمني .......</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> طويل الأجل</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> متوسط الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> قصير الأجل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> لحظي</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. متوسط الأجل</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-mcq-2">
+                <div class="question-number">2</div>
+                <div class="question-text">تعني استراتيجية ..... الإنتاج بمستوى ثابت مع تخزين الفائض في فترات الركود وانخفاض الطلب.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> متابعة الطلب</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> قوة العمل الثابتة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> مستوى الإنتاج الثابت</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> التعاقد من الباطن مع منتج آخر</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. مستوى الإنتاج الثابت</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-mcq-3">
+                <div class="question-number">3</div>
+                <div class="question-text">يشير نشاط ....... إلى تحديد وقت وتاريخ بدء وإنهاء الأعمال.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> التتابع</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> التحميل</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> إعداد الجدولة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> المتابعة والرقابة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. إعداد الجدولة</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-mcq-4">
+                <div class="question-number">4</div>
+                <div class="question-text">يعني نشاط ..... تحديد الأولويات أو الترتيب الذي تعالج الأعمال بموجبه في كل محطة عمل.</div>
+                <div class="options">
+                    <div class="option" data-answer="correct"><span class="option-letter">أ</span> التتابع</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> التحميل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> إعداد الجدولة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> المتابعة والرقابة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: أ. التتابع</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-mcq-5">
+                <div class="question-number">5</div>
+                <div class="question-text">يهدف نشاط ....... إلى التأكد من حسن تنفيذ وتحميل وتتابع الأوامر الإنتاجية.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> التتابع</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> التحميل</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> إعداد الجدولة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">د</span> المتابعة والرقابة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: د. المتابعة والرقابة</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-mcq-6">
+                <div class="question-number">6</div>
+                <div class="question-text">تعتبر "قائمة المواد" و "قائمة العمليات" في نظام جدولة الإنتاج والعمليات بمثابة .......</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> مخرجات نهائية للنظام</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> مدخلات أساسية للنظام</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> أدوات رقابية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> أهداف إستراتيجية</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. مدخلات أساسية للنظام</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-check-double"></i>
+                <h3>ثانياً: صحيح أم خطأ</h3>
+            </div>
+            
+            <div class="question-card" data-id="l8-tf-1">
+                <div class="question-number">1</div>
+                <div class="question-text">تعد وظيفة تخطيط الإنتاج من أهم وظائف إدارة الإنتاج والعمليات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-tf-2">
+                <div class="question-number">2</div>
+                <div class="question-text">التخطيط الذي لا يرتبط بفترة زمنية محددة لبلوغ الأهداف يعتبر مضيعة للجهد وجريًا وراء السراب.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-tf-3">
+                <div class="question-number">3</div>
+                <div class="question-text">تحدد الخطط الإنتاجية متوسطة الأجل، خطوات عامة للنشاط الإنتاجي والعمليات في المنظمة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">الخطط طويلة الأجل هي التي تحدد الخطوات العامة، أما متوسطة الأجل فتحدد التفاصيل الأكثر تحديدًا.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-tf-4">
+                <div class="question-number">4</div>
+                <div class="question-text">تتضمن خطة الإنتاج طويلة الأجل وضع تقديرات إجمالية لمستويات الإنتاج، والعمالة، والمخزون لكل فترة خلال العام.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">هذا الوصف ينطبق على الخطط متوسطة الأجل وليس طويلة الأجل.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-tf-5">
+                <div class="question-number">5</div>
+                <div class="question-text">يتمثل الهدف العام لخطة الإنتاج قصيرة الأجل، هو الوصول إلى المواءمة والتوفيق بين حجم الإنتاج وبين حجم الطلب.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">هذا هو هدف التخطيط الإجمالي للإنتاج وليس خطة الإنتاج قصيرة الأجل فقط.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-tf-6">
+                <div class="question-number">6</div>
+                <div class="question-text">تشير خطط الإنتاج طويلة الأجل إلى ما يسمى بجدولة العمليات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">جدولة العمليات تندرج تحت الخطط قصيرة الأجل وليست طويلة الأجل.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-tf-7">
+                <div class="question-number">7</div>
+                <div class="question-text">يتمثل الهدف من التخطيط الإجمالي للإنتاج في تحقيق الكفاءة والاستخدام الأمثل للموارد.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l8-tf-8">
+                <div class="question-number">8</div>
+                <div class="question-text">تظهر الأهمية القصوى للتخطيط الإجمالي للإنتاج من خلال العمل على مقابلة الطلب المتقلب.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-pen-fancy"></i>
+                <h3>ثالثاً: الأسئلة المقالية</h3>
+            </div>
+            
+            <div class="essay-card" data-id="l8-essay-1">
+                <div class="question-number">1</div>
+                <div class="essay-question">تشير عملية الجدولة إلى وضع جدول زمني للأنشطة التي سيتم تنفيذها وفقًا لترتيب معين، فضلًا عن طريق تخصيص الموارد المتاحة على الأوامر الإنتاجية اشرح هذه العبارة موضحًا ما يلي: أ. مفهوم عملية الجدولة. ب. أهمية عملية الجدولة.</div>
+                <button class="essay-answer-btn" onclick="toggleEssay(this)"><i class="fas fa-lightbulb"></i> عرض الإجابة</button>
+                <div class="essay-answer">
+                    <h4>تعريف جدولة الإنتاج:</h4>
+                    <p>وضع جدول زمني للأنشطة التي سيتم إنجازها وفقًا لترتيب معين، موضحًا توقيت البدء والانتهاء والموارد المخصصة لكل نشاط من هذه الأنشطة.</p>
+                    <h4>أهمية عملية الجدولة:</h4>
+                    <ul>
+                        <li>تحقيق الاستخدام الفعال والكفء للطاقة الإنتاجية التي تم تحديدها مسبقًا.</li>
+                        <li>تسعى الجدولة من خلال التحكم في التوقيت والطاقات المتاحة إلى تخفيض حجم المخزون السلعي من المنتجات تحت التشغيل مما يؤدي إلى تقليل رأس المال المستثمر في هذا المخزون.</li>
+                        <li>سرعة وانتظام حركة أوامر الإنتاج في العملية التشغيلية مما يترتب عليه الالتزام بتسليم الطلبيات في مواعيدها وتحقيق رضا العملاء.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    part9 = """
+    <!-- Lecture 9 -->
+    <section class="lecture-section" id="lecture9">
+        <div class="lecture-title">
+            <h2>المحاضرة التاسعة</h2>
+            <span>نظام تخطيط الاحتياجات من المواد والطاقة</span>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-list-ol"></i>
+                <h3>أولاً: اختر الإجابة الصحيحة</h3>
+            </div>
+            
+            <div class="question-card" data-id="l9-mcq-1">
+                <div class="question-number">1</div>
+                <div class="question-text">تشير الدراسات إلى أن تكلفة التخزين في المنظمات الصناعية قد تصل إلى ..... من قيمة المخزون.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> %10</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> %20</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> %30</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> %50</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. %30</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-mcq-2">
+                <div class="question-number">2</div>
+                <div class="question-text">يعمل نظام تخطيط الاحتياجات من المواد على تحسين خدمة العملاء من خلال خفض نسبة الطلبيات المتأخرة بنسبة ....</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> %50</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> %75</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> %90</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> %25</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. %75</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-mcq-3">
+                <div class="question-number">3</div>
+                <div class="question-text">تعرف ..... بأنها "خطة إجمالية تتضمن كمية المخطط إنتاجها من المنتج النهائي موزعة حسب الفترات الزمنية".</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> سجلات المخزون</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> بطاقة المواد</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> جداول الإنتاج الرئيسة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> تقارير الطلب</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. جداول الإنتاج الرئيسة</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-mcq-4">
+                <div class="question-number">4</div>
+                <div class="question-text">يطلق على الاحتياجات بعد طرح المخزون المتاح والأوامر تحت التوريد .......</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> إجمالي الاحتياجات</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> صافي الاحتياجات</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> مخزون الأمان</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الأوامر المخططة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. صافي الاحتياجات</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-mcq-5">
+                <div class="question-number">5</div>
+                <div class="question-text">فيما يلي ما يعد من التقارير الثانوية (الاختيارية) في نظام تخطيط الاحتياجات من المواد وهي .......</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> جدول الأوامر المخطط إصداره</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> تقارير رقابة الأداء</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> جدول الأوامر الصادرة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> التغييرات في الأوامر المخططة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. تقارير رقابة الأداء</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-mcq-6">
+                <div class="question-number">6</div>
+                <div class="question-text">الطاقة التي تمثل عدد الوحدات التي تم إنتاجها بالفعل خلال وحدة زمنية معينة هي ......</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الطاقة المصممة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ب</span> الطاقة المتاحة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ج</span> الطاقة الفعلية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الطاقة المخططة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: جـ. الطاقة الفعلية</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-mcq-7">
+                <div class="question-number">7</div>
+                <div class="question-text">تأخذ الطاقة ...... في اعتبارها حالات التلف والتأخيرات الضرورية في الأداء الإنتاجي.</div>
+                <div class="options">
+                    <div class="option" data-answer="wrong"><span class="option-letter">أ</span> الطاقة المصممة</div>
+                    <div class="option" data-answer="correct"><span class="option-letter">ب</span> الطاقة المتاحة</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">ج</span> الطاقة الفعلية</div>
+                    <div class="option" data-answer="wrong"><span class="option-letter">د</span> الطاقة المخططة</div>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: ب. الطاقة المتاحة</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-check-double"></i>
+                <h3>ثانياً: صحيح أم خطأ</h3>
+            </div>
+            
+            <div class="question-card" data-id="l9-tf-1">
+                <div class="question-number">1</div>
+                <div class="question-text">يساعد نظام تخطيط الاحتياجات من المواد في تخفيض تكلفة تنفيذ الطلبيات من خلال رفع مستوى المخزون.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">النظام يخفض التكلفة من خلال خفض مستوى المخزون وليس رفعه.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-tf-2">
+                <div class="question-number">2</div>
+                <div class="question-text">نظام تخطيط الاحتياجات من المواد متاح للعمل فقط مع أنظمة الإنتاج المستمر ولا يصلح للإنتاج بالدفعات.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">النظام يصلح للإنتاج بالدفعات أيضًا وليس فقط المستمر.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-tf-3">
+                <div class="question-number">3</div>
+                <div class="question-text">يجب استخدام رمز أو رقم لكل مادة من المواد المستخدمة لأغراض المخزون والإنتاج.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-tf-4">
+                <div class="question-number">4</div>
+                <div class="question-text">بطاقة المواد تتضمن الأجزاء المطلوبة لإنتاج كافة منتجات المنظمة في بطاقة واحدة.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">لكل منتج بطاقة مواد خاصة به وليس بطاقة واحدة لكل المنتجات.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-tf-5">
+                <div class="question-number">5</div>
+                <div class="question-text">الأوامر تحت التوريد هي أوامر لم تصدر بعد ولكن من المتوقع إصدارها مستقبلًا.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: خطأ ✗</div>
+                    <div class="explanation">الأوامر تحت التوريد هي أوامر تم إصدارها بالفعل ولكن لم يتم استلام المواد بعد.</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-tf-6">
+                <div class="question-number">6</div>
+                <div class="question-text">تستخدم تقارير التخطيط للتنبؤ باحتياجات المخزون المستقبلية وتحديد التزامات الشراء.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+            
+            <div class="question-card" data-id="l9-tf-7">
+                <div class="question-number">7</div>
+                <div class="question-text">تعتمد الجدولة في نظام تخطيط الاحتياجات من المواد على الجدولة على موعد من الخلف بناءً على التسليم.</div>
+                <div class="tf-options">
+                    <button class="tf-btn" data-answer="correct"><i class="fas fa-check"></i> صحيح</button>
+                    <button class="tf-btn" data-answer="wrong"><i class="fas fa-times"></i> خطأ</button>
+                </div>
+                <div class="answer-reveal">
+                    <div class="correct-answer"><i class="fas fa-check-circle"></i> الإجابة الصحيحة: صحيح ✓</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="question-type">
+            <div class="question-type-header">
+                <i class="fas fa-pen-fancy"></i>
+                <h3>ثالثاً: الأسئلة المقالية</h3>
+            </div>
+            
+            <div class="essay-card" data-id="l9-essay-1">
+                <div class="question-number">1</div>
+                <div class="essay-question">وضح ما المقصود بنظام التخطيط للاحتياجات من الطاقة، ثم اذكر ما هي أنواع الطاقة.</div>
+                <button class="essay-answer-btn" onclick="toggleEssay(this)"><i class="fas fa-lightbulb"></i> عرض الإجابة</button>
+                <div class="essay-answer">
+                    <h4>نظام التخطيط للاحتياجات من الطاقة:</h4>
+                    <p>هو نظام لتخطيط الإنتاج ومراقبة المخزون آليًا والمساعدة في حساب الطلب على المواد المكونة للمنتجات النهائية، سواء كانت سلع أو خدمات، وتوفير هذه المواد وفقًا لمتطلبات خطة الإنتاج وفي الوقت المطلوب دون اللجوء إلى التخزين الكبير والمستمر من هذه المواد.</p>
+                    <h4>أنواع الطاقة:</h4>
+                    <ul>
+                        <li><strong>الطاقة المصممة:</strong> تمثل عدد الوحدات التي يتم إنتاجها وفقًا للشروط والمواصفات الفنية المحددة للآلات والمعدات والأجهزة في ظل ظروف مثالية.</li>
+                        <li><strong>الطاقة المتاحة:</strong> تمثل عدد الوحدات التي يمكن أن يتم إنتاجها فعليًا وفقًا لتوفر الأعداد المحددة من العاملين والمواد والمعدات آخذين بعين الاعتبار حالات التلف والتأخيرات الضرورية في الأداء الإنتاجي.</li>
+                        <li><strong>الطاقة المخططة:</strong> تمثل عدد الوحدات المراد إنتاجها استنادًا للخطط المستقبلية للمنظمة الصناعية، وفقًا لطبيعة الطلب المرتقب.</li>
+                        <li><strong>الطاقة الفعلية:</strong> تمثل عدد الوحدات التي تم إنتاجها فعلًا خلال وحدة زمنية معينة.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    part10 = """
+    <!-- Quiz Modal -->
+    <div class="modal-overlay" id="quiz-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeQuiz()"><i class="fas fa-times"></i></button>
+            <h2 class="modal-title"><i class="fas fa-gamepad"></i> وضع الاختبار</h2>
+            <div id="quiz-container">
+                <div class="quiz-question" id="quiz-question"></div>
+                <div class="quiz-options" id="quiz-options"></div>
+                <div class="quiz-nav">
+                    <button class="quiz-nav-btn" id="quiz-prev" onclick="prevQuestion()">السابق</button>
+                    <span class="quiz-progress" id="quiz-progress"></span>
+                    <button class="quiz-nav-btn" id="quiz-next" onclick="nextQuestion()">التالي</button>
+                </div>
+            </div>
+            <div id="quiz-result" style="display:none;">
+                <div class="quiz-result">
+                    <div class="quiz-result-icon" id="result-icon"></div>
+                    <div class="quiz-result-score" id="result-score"></div>
+                    <div class="quiz-result-text" id="result-text"></div>
+                    <button class="quiz-nav-btn" onclick="restartQuiz()">إعادة الاختبار</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="quiz-mode-btn" onclick="startQuiz()">
+        <i class="fas fa-play"></i> اختبر نفسك
+    </button>
+
+    <button class="scroll-top" id="scroll-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <footer class="footer">
+        <p>منصة إدارة الإنتاج والعمليات - جميع الحقوق محفوظة</p>
+        <p>تم إنشاؤه بكل ❤️ للطلاب</p>
+    </footer>
+
+    <script>
+        // State
+        let currentLecture = 'lecture3';
+        let answeredQuestions = JSON.parse(localStorage.getItem('answeredQuestions') || '{}');
+        let correctCount = parseInt(localStorage.getItem('correctCount') || '0');
+        let wrongCount = parseInt(localStorage.getItem('wrongCount') || '0');
+        let quizQuestions = [];
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizAnswered = false;
+
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.lecture-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(this.dataset.lecture).classList.add('active');
+                currentLecture = this.dataset.lecture;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // MCQ handling
+        document.querySelectorAll('.options').forEach(optionsContainer => {
+            const options = optionsContainer.querySelectorAll('.option');
+            const reveal = optionsContainer.parentElement.querySelector('.answer-reveal');
+            const questionId = optionsContainer.parentElement.dataset.id;
+
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (answeredQuestions[questionId]) return;
+                    
+                    const isCorrect = this.dataset.answer === 'correct';
+                    answeredQuestions[questionId] = isCorrect ? 'correct' : 'wrong';
+                    
+                    if (isCorrect) correctCount++;
+                    else wrongCount++;
+                    
+                    localStorage.setItem('answeredQuestions', JSON.stringify(answeredQuestions));
+                    localStorage.setItem('correctCount', correctCount);
+                    localStorage.setItem('wrongCount', wrongCount);
+                    
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        if (opt.dataset.answer === 'correct') opt.classList.add('correct');
+                        else if (opt === this && !isCorrect) opt.classList.add('wrong');
+                    });
+                    
+                    this.classList.add('selected');
+                    reveal.classList.add('show');
+                    updateProgress();
+                });
+            });
+        });
+
+        // True/False handling
+        document.querySelectorAll('.tf-options').forEach(tfContainer => {
+            const buttons = tfContainer.querySelectorAll('.tf-btn');
+            const reveal = tfContainer.parentElement.querySelector('.answer-reveal');
+            const questionId = tfContainer.parentElement.dataset.id;
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (answeredQuestions[questionId]) return;
+                    
+                    const isCorrect = this.dataset.answer === 'correct';
+                    answeredQuestions[questionId] = isCorrect ? 'correct' : 'wrong';
+                    
+                    if (isCorrect) correctCount++;
+                    else wrongCount++;
+                    
+                    localStorage.setItem('answeredQuestions', JSON.stringify(answeredQuestions));
+                    localStorage.setItem('correctCount', correctCount);
+                    localStorage.setItem('wrongCount', wrongCount);
+                    
+                    buttons.forEach(b => {
+                        b.classList.remove('selected');
+                        if (b.dataset.answer === 'correct') b.classList.add('correct');
+                        else if (b === this && !isCorrect) b.classList.add('wrong');
+                    });
+                    
+                    this.classList.add('selected');
+                    reveal.classList.add('show');
+                    updateProgress();
+                });
+            });
+        });
+
+        // Essay toggle
+        function toggleEssay(btn) {
+            const answer = btn.nextElementSibling;
+            answer.classList.toggle('show');
+            btn.innerHTML = answer.classList.contains('show') 
+                ? '<i class="fas fa-eye-slash"></i> إخفاء الإجابة' 
+                : '<i class="fas fa-lightbulb"></i> عرض الإجابة';
+        }
+
+        // Progress
+        function updateProgress() {
+            const total = document.querySelectorAll('.question-card[data-id], .essay-card[data-id]').length;
+            const answered = Object.keys(answeredQuestions).length;
+            const percent = total > 0 ? Math.round((answered / total) * 100) : 0;
+            
+            document.getElementById('progress-percent').textContent = percent + '%';
+            document.getElementById('progress-fill').style.width = percent + '%';
+            document.getElementById('stat-correct').textContent = correctCount;
+            document.getElementById('stat-wrong').textContent = wrongCount;
+            document.getElementById('stat-remaining').textContent = total - answered;
+            document.getElementById('answered-count').textContent = answered + ' مجاب';
+            document.getElementById('total-questions').textContent = total + ' سؤال';
+        }
+
+        // Restore state
+        function restoreState() {
+            document.querySelectorAll('.question-card[data-id]').forEach(card => {
+                const id = card.dataset.id;
+                if (answeredQuestions[id]) {
+                    const reveal = card.querySelector('.answer-reveal');
+                    const options = card.querySelectorAll('.option');
+                    const tfBtns = card.querySelectorAll('.tf-btn');
+                    
+                    if (reveal) reveal.classList.add('show');
+                    
+                    options.forEach(opt => {
+                        if (opt.dataset.answer === 'correct') opt.classList.add('correct');
+                    });
+                    
+                    tfBtns.forEach(btn => {
+                        if (btn.dataset.answer === 'correct') btn.classList.add('correct');
+                    });
+                }
+            });
+            updateProgress();
+        }
+
+        // Search
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim().toLowerCase();
+            if (query.length < 2) {
+                searchResults.classList.remove('show');
+                return;
+            }
+            
+            const results = [];
+            document.querySelectorAll('.question-text, .essay-question').forEach(el => {
+                const text = el.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    const card = el.closest('.question-card, .essay-card');
+                    const lecture = el.closest('.lecture-section');
+                    const lectureTitle = lecture.querySelector('.lecture-title h2').textContent;
+                    results.push({
+                        text: el.textContent.substring(0, 100) + '...',
+                        lecture: lectureTitle,
+                        element: card
+                    });
+                }
+            });
+            
+            searchResults.innerHTML = results.map(r => 
+                `<div class="search-result-item" onclick="goToQuestion(this)">
+                    <div class="search-result-lecture">${r.lecture}</div>
+                    <div class="search-result-text">${r.text}</div>
+                </div>`
+            ).join('');
+            
+            searchResults.classList.add('show');
+        });
+
+        function goToQuestion(item) {
+            const text = item.querySelector('.search-result-text').textContent;
+            document.querySelectorAll('.question-text, .essay-question').forEach(el => {
+                if (el.textContent.includes(text.substring(0, 50))) {
+                    const card = el.closest('.question-card, .essay-card');
+                    const lecture = el.closest('.lecture-section');
+                    const lectureId = lecture.id;
+                    
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelector(`[data-lecture="${lectureId}"]`).classList.add('active');
+                    document.querySelectorAll('.lecture-section').forEach(s => s.classList.remove('active'));
+                    lecture.classList.add('active');
+                    
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.classList.add('highlight');
+                    setTimeout(() => card.classList.remove('highlight'), 2000);
+                }
+            });
+            searchResults.classList.remove('show');
+            searchInput.value = '';
+        }
+
+        // Quiz Mode
+        function startQuiz() {
+            quizQuestions = [];
+            document.querySelectorAll('.question-card').forEach(card => {
+                const questionText = card.querySelector('.question-text').textContent;
+                const options = [];
+                const correctAnswer = [];
+                
+                card.querySelectorAll('.option').forEach(opt => {
+                    options.push({
+                        text: opt.textContent.replace(/[أ-د]\s*/, ''),
+                        correct: opt.dataset.answer === 'correct',
+                        letter: opt.querySelector('.option-letter')?.textContent || ''
+                    });
+                });
+                
+                card.querySelectorAll('.tf-btn').forEach(btn => {
+                    options.push({
+                        text: btn.textContent,
+                        correct: btn.dataset.answer === 'correct'
+                    });
+                });
+                
+                if (options.length > 0) {
+                    quizQuestions.push({
+                        question: questionText,
+                        options: options,
+                        id: card.dataset.id
+                    });
+                }
+            });
+            
+            // Shuffle
+            quizQuestions = quizQuestions.sort(() => Math.random() - 0.5).slice(0, 20);
+            currentQuizIndex = 0;
+            quizScore = 0;
+            quizAnswered = false;
+            
+            showQuizQuestion();
+            document.getElementById('quiz-modal').classList.add('show');
+        }
+
+        function showQuizQuestion() {
+            const q = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-question').textContent = q.question;
+            
+            const optionsHtml = q.options.map((opt, i) => 
+                `<div class="quiz-option" onclick="selectQuizOption(${i}, this)">${opt.letter ? '<span class="option-letter">' + opt.letter + '</span> ' : ''}${opt.text}</div>`
+            ).join('');
+            
+            document.getElementById('quiz-options').innerHTML = optionsHtml;
+            document.getElementById('quiz-progress').textContent = `${currentQuizIndex + 1} / ${quizQuestions.length}`;
+            document.getElementById('quiz-prev').disabled = currentQuizIndex === 0;
+            document.getElementById('quiz-next').textContent = currentQuizIndex === quizQuestions.length - 1 ? 'إنهاء' : 'التالي';
+            quizAnswered = false;
+        }
+
+        function selectQuizOption(index, element) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+            
+            const q = quizQuestions[currentQuizIndex];
+            const isCorrect = q.options[index].correct;
+            
+            if (isCorrect) {
+                quizScore++;
+                element.classList.add('correct');
+            } else {
+                element.classList.add('wrong');
+                // Show correct
+                document.querySelectorAll('.quiz-option').forEach((opt, i) => {
+                    if (q.options[i].correct) opt.classList.add('correct');
+                });
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuizIndex < quizQuestions.length - 1) {
+                currentQuizIndex++;
+                showQuizQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuizIndex > 0) {
+                currentQuizIndex--;
+                showQuizQuestion();
+            }
+        }
+
+        function showQuizResult() {
+            const percent = Math.round((quizScore / quizQuestions.length) * 100);
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'block';
+            
+            let icon, text;
+            if (percent >= 80) {
+                icon = '🎉';
+                text = 'ممتاز! أداء رائع';
+                createConfetti();
+            } else if (percent >= 60) {
+                icon = '👍';
+                text = 'جيد! يمكنك التحسن';
+            } else {
+                icon = '💪';
+                text = 'استمر في المذاكرة';
+            }
+            
+            document.getElementById('result-icon').textContent = icon;
+            document.getElementById('result-score').textContent = percent + '%';
+            document.getElementById('result-text').textContent = `${quizScore} من ${quizQuestions.length} | ${text}`;
+        }
+
+        function restartQuiz() {
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('quiz-result').style.display = 'none';
+            startQuiz();
+        }
+
+        function closeQuiz() {
+            document.getElementById('quiz-modal').classList.remove('show');
+        }
+
+        // Confetti
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = ['#f4a261', '#e76f51', '#2a9d8f', '#1a5f7a', '#e9c46a'][Math.floor(Math.random() * 5)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        // Scroll to top
+        window.addEventListener('scroll', () => {
+            document.getElementById('scroll-top').classList.toggle('show', window.scrollY > 500);
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        restoreState();
+    </script>
+</body>
+</html>
