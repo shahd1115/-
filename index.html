@@ -1,5 +1,5 @@
-# Write the HTML file in parts to avoid truncation
-part1 = """<!DOCTYPE html>
+# Create the complete HTML file with reset button integrated from the start
+html_content = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -85,6 +85,21 @@ part1 = """<!DOCTYPE html>
             border: 1px solid rgba(255,255,255,0.2);
         }
         .stat-item i { margin-left: 0.5rem; color: var(--secondary); }
+        
+        /* Reset Button in Header */
+        .reset-btn {
+            background: rgba(230, 57, 70, 0.25) !important;
+            border: 1px solid rgba(230, 57, 70, 0.4) !important;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .reset-btn:hover {
+            background: rgba(230, 57, 70, 0.4) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+        }
+        .reset-btn i { color: #ff6b6b !important; }
+        
         .nav-container {
             background: var(--card-bg);
             padding: 1rem;
@@ -491,7 +506,7 @@ part1 = """<!DOCTYPE html>
             .question-text, .essay-question { font-size: 0.95rem; }
             .quiz-mode-btn { bottom: 1rem; left: 1rem; padding: 0.8rem 1.2rem; font-size: 0.95rem; }
         }
-        .confetti {
+      confetti {
             position: fixed;
             width: 10px; height: 10px;
             background: var(--secondary);
@@ -503,7 +518,7 @@ part1 = """<!DOCTYPE html>
             0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
-      .scroll-top {
+        .scroll-top {
             position: fixed;
             bottom: 2rem; right: 2rem;
             background: var(--primary);
@@ -525,11 +540,15 @@ part1 = """<!DOCTYPE html>
     </style>
 </head>
 <body>
-  <header class="header">
+    <header class="header">
         <h1><i class="fas fa-graduation-cap"></i> منصة إدارة الإنتاج والعمليات</h1>
         <p>أسئلة تفاعلية شاملة لجميع المحاضرات</p>
         <div class="header-stats">
             <div class="stat-item"><i class="fas fa-book"></i><span>7 محاضرات</span></div>
+            <div class="stat-item reset-btn" onclick="resetAllProgress()">
+                <i class="fas fa-redo-alt"></i>
+                <span>إعادة التعيين</span>
+            </div>
             <div class="stat-item"><i class="fas fa-question-circle"></i><span id="total-questions">0 سؤال</span></div>
             <div class="stat-item"><i class="fas fa-check-circle"></i><span id="answered-count">0 مجاب</span></div>
         </div>
@@ -2368,7 +2387,8 @@ part1 = """<!DOCTYPE html>
             </div>
         </div>
     </section>
-    part10 = """
+    # Part 9: JavaScript and closing tags
+part9 = '''
     <!-- Quiz Modal -->
     <div class="modal-overlay" id="quiz-modal">
         <div class="modal-content">
@@ -2520,6 +2540,32 @@ part1 = """<!DOCTYPE html>
             document.getElementById('total-questions').textContent = total + ' سؤال';
         }
 
+        // Reset all progress
+        function resetAllProgress() {
+            if (confirm('هل أنت متأكد من إعادة التعيين؟ سيتم حذف جميع إجاباتك والتقدم!')) {
+                localStorage.removeItem('answeredQuestions');
+                localStorage.removeItem('correctCount');
+                localStorage.removeItem('wrongCount');
+                answeredQuestions = {};
+                correctCount = 0;
+                wrongCount = 0;
+                
+                // Reset all visual states
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('correct', 'wrong', 'selected');
+                });
+                document.querySelectorAll('.tf-btn').forEach(btn => {
+                    btn.classList.remove('correct', 'wrong', 'selected');
+                });
+                document.querySelectorAll('.answer-reveal').forEach(reveal => {
+                    reveal.classList.remove('show');
+                });
+                
+                updateProgress();
+                alert('تم إعادة التعيين بنجاح!');
+            }
+        }
+
         // Restore state
         function restoreState() {
             document.querySelectorAll('.question-card[data-id]').forEach(card => {
@@ -2607,7 +2653,6 @@ part1 = """<!DOCTYPE html>
             document.querySelectorAll('.question-card').forEach(card => {
                 const questionText = card.querySelector('.question-text').textContent;
                 const options = [];
-                const correctAnswer = [];
                 
                 card.querySelectorAll('.option').forEach(opt => {
                     options.push({
